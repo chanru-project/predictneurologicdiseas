@@ -1,0 +1,63 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        blue: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          900: '#1e3a8a',
+        },
+        teal: {
+          50: '#f0fdfa',
+          100: '#ccfbf1',
+          500: '#14b8a6',
+          600: '#0d9488',
+          700: '#0f766e',
+          900: '#134e4a',
+        },
+        green: {
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          400: '#4ade80',
+          500: '#22c55e',
+          600: '#16a34a',
+          700: '#15803d',
+          900: '#14532d',
+        },
+      },
+      animation: {
+        'spin': 'spin 1s linear infinite',
+        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+    },
+  },
+  plugins: [],
+  safelist: [
+    'bg-blue-100',
+    'bg-blue-900',
+    'text-blue-600',
+    'text-blue-400',
+    'bg-green-100',
+    'bg-green-900',
+    'text-green-600',
+    'text-green-400',
+    'bg-purple-100',
+    'bg-purple-900',
+    'text-purple-600',
+    'text-purple-400',
+    'bg-yellow-100',
+    'bg-yellow-900',
+    'text-yellow-600',
+    'text-yellow-400',
+    'bg-red-100',
+    'bg-red-900',
+    'text-red-600',
+    'text-red-400',
+  ],
+};

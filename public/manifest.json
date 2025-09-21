@@ -1,0 +1,16 @@
+{
+  "name": "NeuroDetect - AI Neurological Disease Detection",
+  "short_name": "NeuroDetect",
+  "description": "Advanced AI-powered platform for neurological disease detection",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9IiMzYjgyZjYiLz4KPHBhdGggZD0iTTk2IDQ4QzY5LjQ5IDQ4IDQ4IDY5LjQ5IDQ4IDk2UzY5LjQ5IDE0NCA5NiAxNDRTMTQ0IDEyMi41MSAxNDQgOTZTMTIyLjUxIDQ4IDk2IDQ4Wk05NiAxMjhDNzcuNzc0IDEyOCA2NCAxMTQuMjI2IDY0IDk2Uzc3Ljc3NCA2NCA5NiA2NFMxMjggNzcuNzc0IDEyOCA5NlMxMTQuMjI2IDEyOCA5NiAxMjhaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}
