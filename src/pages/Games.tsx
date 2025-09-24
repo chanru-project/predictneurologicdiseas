@@ -864,60 +864,45 @@ function GameInterface({ game, isActive, onEnd, onReset, finalScore }: GameInter
                         🤖 AI Neurological Prediction
                       </h3>
                       
-                      {/* Performance Assessment */}
+                      {/* Detailed Performance Analysis */}
                       <div className="mb-6">
-                        <h4 className="text-md font-semibold text-gray-900 dark:text-white mb-3">
-                          Performance Assessment
-                        </h4>
-                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                          {prediction.performance}
-                        </p>
-                      </div>
-
-                      {/* Issues Detected */}
-                      {prediction.issues.length > 0 && (
-                        <div className="mb-6">
-                          <h4 className="text-md font-semibold text-red-600 dark:text-red-400 mb-3">
-                            ⚠️ Potential Issues Detected
-                          </h4>
-                          <div className="space-y-2">
-                            {prediction.issues.map((issue, index) => (
-                              <div key={index} className="flex items-start space-x-2 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                                <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
-                                <p className="text-red-800 dark:text-red-200 text-sm">{issue}</p>
-                              </div>
-                            ))}
+                        <h4 className="text-md font-semibold text-gray-900 dark:text-white mb-3">Performance Summary</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                          <div>
+                            <p className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">{finalScore.score}%</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Overall Score</p>
+                          </div>
+                          <div>
+                            <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${prediction.issues.length === 0 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : prediction.issues.length <= 2 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>{prediction.issues.length === 0 ? 'LOW RISK' : prediction.issues.length <= 2 ? 'MEDIUM RISK' : 'HIGH RISK'}</span>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">Risk Level</p>
                           </div>
                         </div>
-                      )}
-
-                      {/* Recommendations */}
-                      <div className="mb-6">
-                        <h4 className="text-md font-semibold text-blue-600 dark:text-blue-400 mb-3">
-                          💡 AI Recommendations
-                        </h4>
-                        <div className="space-y-2">
-                          {prediction.recommendations.map((recommendation, index) => (
-                            <div key={index} className="flex items-start space-x-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                              <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
-                              <p className="text-blue-800 dark:text-blue-200 text-sm">{recommendation}</p>
-                            </div>
-                          ))}
+                        <div className="mb-4">
+                          <h4 className="font-semibold text-green-700 dark:text-green-300 mb-1">Strengths</h4>
+                          <p className="text-sm text-green-800 dark:text-green-200">{finalScore.score >= 80 ? 'Excellent performance and accuracy.' : finalScore.score >= 60 ? 'Good skills, but some mistakes.' : 'Basic skills, needs improvement.'}</p>
                         </div>
-                      </div>
-
-                      {/* Risk Level */}
-                      <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Risk Level:</span>
-                          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                            prediction.issues.length === 0 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                            prediction.issues.length <= 2 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                            'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                          }`}>
-                            {prediction.issues.length === 0 ? 'LOW RISK' :
-                             prediction.issues.length <= 2 ? 'MEDIUM RISK' : 'HIGH RISK'}
-                          </span>
+                        <div className="mb-4">
+                          <h4 className="font-semibold text-yellow-700 dark:text-yellow-300 mb-1">Areas for Improvement</h4>
+                          <p className="text-sm text-yellow-800 dark:text-yellow-200">{finalScore.score >= 80 ? 'Try more challenging games.' : finalScore.score >= 60 ? 'Review mistakes and try again.' : 'Focus on practicing the basics.'}</p>
+                        </div>
+                        <div className="mb-4">
+                          <h4 className="font-semibold text-blue-700 dark:text-blue-300 mb-1">Personalized Recommendations</h4>
+                          <ul className="list-disc list-inside text-sm text-blue-800 dark:text-blue-200">
+                            {prediction.recommendations.map((recommendation, index) => (
+                              <li key={index}>{recommendation}</li>
+                            ))}
+                            <li>Continue regular cognitive exercises.</li>
+                            <li>Maintain a healthy lifestyle (sleep, nutrition, stress management).</li>
+                          </ul>
+                        </div>
+                        <div className="mb-2">
+                          <h4 className="font-semibold text-purple-700 dark:text-purple-300 mb-1">AI Analysis</h4>
+                          <p className="text-sm text-purple-800 dark:text-purple-200">Based on your results, your performance is classified as: <span className="font-bold">{prediction.issues.length === 0 ? 'LOW RISK' : prediction.issues.length <= 2 ? 'MEDIUM RISK' : 'HIGH RISK'}</span></p>
+                          {prediction.issues.length > 0 ? (
+                            <p className="text-sm text-red-800 dark:text-red-200 mt-1">Potential issues detected: {prediction.issues.join(', ')}</p>
+                          ) : (
+                            <p className="text-sm text-green-800 dark:text-green-200 mt-1">No significant issues detected. Keep up the good work!</p>
+                          )}
                         </div>
                       </div>
                     </div>

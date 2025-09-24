@@ -588,36 +588,41 @@ function TestInterface({
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                   Test Complete!
                 </h2>
-                
+                {/* Detailed Performance Analysis */}
                 <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 mb-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-3">Performance Summary</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                     <div>
-                      <p className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
-                        {result.score}%
-                      </p>
+                      <p className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">{result.score}%</p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Overall Score</p>
                     </div>
                     <div>
-                      <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getRiskColor(result.riskLevel)}`}>
-                        {result.riskLevel.toUpperCase()} RISK
-                      </span>
+                      <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getRiskColor(result.riskLevel)}`}>{result.riskLevel.toUpperCase()} RISK</span>
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">Risk Level</p>
                     </div>
                   </div>
-                </div>
-                
-                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 mb-6">
-                  <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-3">
-                    AI Recommendations
-                  </h3>
-                  <ul className="text-left space-y-2">
-                    {result.recommendations.map((recommendation, index) => (
-                      <li key={index} className="flex items-start space-x-2 text-sm text-blue-800 dark:text-blue-200">
-                        <CheckCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                        <span>{recommendation}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="mb-4">
+                    <h4 className="font-semibold text-green-700 dark:text-green-300 mb-1">Strengths</h4>
+                    <p className="text-sm text-green-800 dark:text-green-200">{result.score >= 80 ? 'Excellent cognitive performance and accuracy.' : result.score >= 60 ? 'Good understanding, but some mistakes.' : 'Basic understanding, needs improvement.'}</p>
+                  </div>
+                  <div className="mb-4">
+                    <h4 className="font-semibold text-yellow-700 dark:text-yellow-300 mb-1">Areas for Improvement</h4>
+                    <p className="text-sm text-yellow-800 dark:text-yellow-200">{result.score >= 80 ? 'Keep challenging yourself with harder tests.' : result.score >= 60 ? 'Review incorrect answers and try again.' : 'Focus on foundational concepts and practice regularly.'}</p>
+                  </div>
+                  <div className="mb-4">
+                    <h4 className="font-semibold text-blue-700 dark:text-blue-300 mb-1">Personalized Recommendations</h4>
+                    <ul className="list-disc list-inside text-sm text-blue-800 dark:text-blue-200">
+                      {result.recommendations.map((recommendation, index) => (
+                        <li key={index}>{recommendation}</li>
+                      ))}
+                      <li>Continue practicing cognitive exercises daily.</li>
+                      <li>Maintain a healthy lifestyle (sleep, nutrition, stress management).</li>
+                    </ul>
+                  </div>
+                  <div className="mb-2">
+                    <h4 className="font-semibold text-purple-700 dark:text-purple-300 mb-1">AI Analysis</h4>
+                    <p className="text-sm text-purple-800 dark:text-purple-200">Based on your results, your cognitive performance is classified as: <span className="font-bold">{result.riskLevel.toUpperCase()}</span></p>
+                  </div>
                 </div>
                 
                 <div className="space-x-4">

@@ -1,19 +1,22 @@
+
 import React, { useState, memo, useCallback } from 'react';
 import { Upload, Brain, AlertCircle, CheckCircle, X, FileImage } from 'lucide-react';
 
-interface DetectionResult {
-  disease: string;
-  probability: number;
-  confidence: number;
-  description: string;
-  risk_level: 'low' | 'medium' | 'high';
+interface AnalysisResult {
+  summary: string;
+  key_terms: string[];
+  findings: string[];
+  abnormalities: string[];
+  risk_score: number;
+  recommendation: string;
 }
 
 const AIDetection = memo(function AIDetection() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>('');
   const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState<DetectionResult[] | null>(null);
+  const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -22,66 +25,46 @@ const AIDetection = memo(function AIDetection() {
       const reader = new FileReader();
       reader.onload = () => setPreview(reader.result as string);
       reader.readAsDataURL(selectedFile);
-      setResults(null);
+      setResult(null);
+      setError(null);
     }
   }, []);
 
   const removeFile = useCallback(() => {
     setFile(null);
     setPreview('');
-    setResults(null);
+    setResult(null);
+    setError(null);
   }, []);
 
-  const analyzeImage = useCallback(async () => {
+  const analyzeReport = useCallback(async () => {
     if (!file) return;
-    
     setLoading(true);
-    
-    // Simulate AI analysis
-    setTimeout(() => {
-      const mockResults: DetectionResult[] = [
-        {
-          disease: 'Alzheimer\'s Disease',
-          probability: 0.15,
-          confidence: 0.85,
-          description: 'Early stage indicators detected with low probability',
-          risk_level: 'low'
-        },
-        {
-          disease: 'Parkinson\'s Disease',
-          probability: 0.08,
-          confidence: 0.78,
-          description: 'Minimal indicators present',
-          risk_level: 'low'
-        },
-        {
-          disease: 'Stroke Risk',
-          probability: 0.22,
-          confidence: 0.92,
-          description: 'Slight vascular changes observed',
-          risk_level: 'medium'
-        },
-        {
-          disease: 'Normal',
-          probability: 0.55,
-          confidence: 0.95,
-          description: 'Brain structure appears normal for age',
-          risk_level: 'low'
-        }
-      ];
-      
-      setResults(mockResults.sort((a, b) => b.probability - a.probability));
+    setError(null);
+    setResult(null);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await fetch('/analyze-report', {
+        method: 'POST',
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error('Failed to analyze report.');
+      }
+      const data = await response.json();
+      setResult(data.analysis);
+    } catch (err: any) {
+      setError(err.message || 'Unknown error occurred.');
+    } finally {
       setLoading(false);
-    }, 3000);
+    }
   }, [file]);
 
-  const getRiskColor = (risk: string) => {
-    switch (risk) {
-      case 'low': return 'text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-400';
-      case 'medium': return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900 dark:text-yellow-400';
-      case 'high': return 'text-red-600 bg-red-100 dark:bg-red-900 dark:text-red-400';
-      default: return 'text-gray-600 bg-gray-100 dark:bg-gray-900 dark:text-gray-400';
-    }
+  const getRiskColor = (score: number) => {
+    if (score < 30) return 'text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-400';
+    if (score < 70) return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900 dark:text-yellow-400';
+    return 'text-red-600 bg-red-100 dark:bg-red-900 dark:text-red-400';
   };
 
   return (
@@ -152,7 +135,7 @@ const AIDetection = memo(function AIDetection() {
                 </span>
               </div>
               <button
-                onClick={analyzeImage}
+                onClick={analyzeReport}
                 disabled={loading}
                 className="flex-1 max-w-xs bg-gradient-to-r from-blue-600 to-teal-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-700 hover:to-teal-700 disabled:opacity-50 transition-all duration-200"
               >
@@ -171,84 +154,49 @@ const AIDetection = memo(function AIDetection() {
       </div>
 
       {/* Results Section */}
-      {results && (
+      {error && (
+        <div className="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-200 p-4 rounded-lg mb-4">
+          <AlertCircle className="inline h-5 w-5 mr-2 align-text-bottom" />
+          {error}
+        </div>
+      )}
+      {result && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
             Analysis Results
           </h2>
-          
-          <div className="space-y-4">
-            {results.map((result, index) => (
-              <div
-                key={index}
-                className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-semibold text-gray-900 dark:text-white">
-                    {result.disease}
-                  </h3>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRiskColor(result.risk_level)}`}>
-                    {result.risk_level.toUpperCase()} RISK
-                  </span>
-                </div>
-                
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                  {result.description}
-                </p>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Probability</p>
-                    <div className="flex items-center space-x-2">
-                      <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                        <div
-                          className="bg-gradient-to-r from-blue-500 to-teal-500 h-2 rounded-full"
-                          style={{ width: `${result.probability * 100}%` }}
-                        ></div>
-                      </div>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">
-                        {(result.probability * 100).toFixed(1)}%
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Confidence</p>
-                    <div className="flex items-center space-x-2">
-                      <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                        <div
-                          className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full"
-                          style={{ width: `${result.confidence * 100}%` }}
-                        ></div>
-                      </div>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">
-                        {(result.confidence * 100).toFixed(1)}%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="mb-4">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Summary</h3>
+            <p className="text-gray-700 dark:text-gray-300">{result.summary}</p>
           </div>
-
-          {/* Recommendations */}
-          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <div className="flex items-start space-x-3">
-              <CheckCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5" />
-              <div>
-                <h4 className="font-medium text-blue-900 dark:text-blue-100">
-                  AI Recommendations
-                </h4>
-                <ul className="mt-2 text-sm text-blue-800 dark:text-blue-200 space-y-1">
-                  <li>• Continue regular monitoring and follow-up appointments</li>
-                  <li>• Consider lifestyle modifications for brain health</li>
-                  <li>• Discuss results with your neurologist for professional interpretation</li>
-                </ul>
-              </div>
-            </div>
+          <div className="mb-4">
+            <h4 className="font-semibold text-blue-700 dark:text-blue-300 mb-1">Key Medical Terms</h4>
+            <ul className="list-disc list-inside text-sm text-blue-800 dark:text-blue-200">
+              {result.key_terms.map((term, idx) => <li key={idx}>{term}</li>)}
+            </ul>
           </div>
-
-          {/* Disclaimer */}
+          <div className="mb-4">
+            <h4 className="font-semibold text-green-700 dark:text-green-300 mb-1">Findings</h4>
+            <ul className="list-disc list-inside text-sm text-green-800 dark:text-green-200">
+              {result.findings.map((finding, idx) => <li key={idx}>{finding}</li>)}
+            </ul>
+          </div>
+          <div className="mb-4">
+            <h4 className="font-semibold text-red-700 dark:text-red-300 mb-1">Abnormalities</h4>
+            <ul className="list-disc list-inside text-sm text-red-800 dark:text-red-200">
+              {result.abnormalities.length > 0 ? result.abnormalities.map((abn, idx) => <li key={idx}>{abn}</li>) : <li>None detected</li>}
+            </ul>
+          </div>
+          <div className="mb-4">
+            <h4 className="font-semibold text-purple-700 dark:text-purple-300 mb-1">Health Risk Score</h4>
+            <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getRiskColor(result.risk_score)}`}>
+              {result.risk_score} / 100
+            </span>
+          </div>
+          <div className="mb-4">
+            <h4 className="font-semibold text-blue-700 dark:text-blue-300 mb-1">AI Recommendation</h4>
+            <p className="text-blue-800 dark:text-blue-200 text-sm">{result.recommendation}</p>
+          </div>
           <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
             <div className="flex items-start space-x-3">
               <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 mt-0.5" />
